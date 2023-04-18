@@ -14,9 +14,13 @@ de la nostra aplicació.
     def id(self, valor):
         self._id = valor
 
-    # @property
-    # def persistencia(self):
-    #     return self._persistencia
+    @property
+    def persistencia(self):
+       return self._persistencia
+    
+    @persistencia.setter
+    def persistencia(self, valor):
+        self._persistencia = valor
 
     @property
     def titol(self):
@@ -45,8 +49,13 @@ de la nostra aplicació.
         self._titol = str(titol).strip()
         self._done = done
         self._id = id
-        
 
+    def desa(self):
+        resultat = self._persistencia.desa(self)   
+        if resultat:
+            self.id =resultat.id
+        return resultat
+    
     def __str__(self):
         resultat = {'id': self._id, 'titol': self._titol, 'done': self._done}
         return json.dumps(resultat)
