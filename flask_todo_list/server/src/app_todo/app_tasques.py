@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import tasca
+import persistencia_usuari_mysql
 import persistencia_tasca_sqlite
 import persistencia_tasca_mysql
+import usuari
 import json
 
 RUTA_BD = "todo_list.db"
@@ -13,14 +15,23 @@ class App_tasques():
         try:
             self._database = config("database")
         except:
-            self,_database = None
-        print(f"Base de dades; {self._database}")
+            self._database = None
+        print(f"Base de dades: {self._database}")
         if self._database == "sqlite":
-            self._persistencia_tasques = persistencia_tasca_sqlite.Persistencia_tasca_sqlite
+            self._persistencia_tasques = persistencia_tasca_sqlite.Persistencia_tasca_sqlite(RUTA_BD)
+            self._persistencia_usuaris = None
+            raise NotImplementedError("Falta implementar la persistencia usuari per aquest SGBD.")
         elif self._database == "mysql":
-            self._persistencia_tasques = persistencia_tasca_mysql.Persistencia_tasca_mysql
+            self._persistencia_tasques = persistencia_tasca_mysql.Persistencia_tasca_mysql()
+            self._persistencia_tasques = persistencia_usuari_mysql.Persistencia_usuari_mysql()
         else:
             raise Exception("Base de dades no reconeguda!!!")
+        
+    def registre(self, user):
+        nou_usuari = usuari.Usuari(self._persistencia_usuaris, user.nom, user.nick, user.password)
+        resultat = nou_usuari.desa()
+        return resultat
+
 
     def llegeix_configuracio(self):
         ruta_config = "./config.json"
