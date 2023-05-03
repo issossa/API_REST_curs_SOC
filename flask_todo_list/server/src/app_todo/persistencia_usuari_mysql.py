@@ -43,8 +43,8 @@ class Persistencia_usuari_mysql():
         cursor.close()
         return resultat
     
-    def Llegueix_amb_nick(self, nick):
-        consulta = f"select id, password_hash from usuaris where nick ='{nick};"
+    def llegeix_amb_nick(self, nick):
+        consulta = f"select id, password_hash, nom from usuaris where nick ='{nick}';"
         cursor = self._conn.cursor(buffered=True)
         resultat = None
         cursor.execute(consulta)
@@ -52,8 +52,9 @@ class Persistencia_usuari_mysql():
         cursor.reset()
         cursor.close()
         if dades:
-            nou_usuari = usuari.Usuari(self, None, nick, dades[1], dades[0])
-        return nou_usuari
+            nou_usuari = usuari.Usuari(self, dades[2], nick, dades[1], dades[0])
+            return nou_usuari
+        return None
     
     def calcula_hash(self, password):
         bytes = password.encode('utf-8')
@@ -61,7 +62,21 @@ class Persistencia_usuari_mysql():
         hash = bcrypt.hashpw(bytes, sal)
         return hash
     
-            
+    def desa_api_key(self, usuari, api_key):
+        resultat =None
+        consulta = f"INSERT INTO sessions (usuari, api_key) VALUES({usuari.id}, '{api_key}');"
+        cursor = self._conn.cursor(buffered=True)
+        try:
+            cursor.execute(consulta)
+            self._conn.commit()
+            resultat = True
+        except:
+            print("[x] No hem pogut inserir la API key a la base de dades;")
+            resultat=False
+        cursor.reset()
+        cursor.close()
+        return resultat
+
     def existeixen_taules(self):
         consulta_1 = "SELECT * FROM usuaris LIMIT 1;"
         consulta_2 = "SELECT * FROM sessions LIMIT 1;"
@@ -114,9 +129,9 @@ class Persistencia_usuari_mysql():
 
 def main():
     nova_persistencia = Persistencia_usuari_mysql()
-    #nou_usuari = usuari.Usuari(nova_persistencia, "Adelaida", "Adi", "1234")  
-    #print(nou_usuari.desa())                   
-    res = nova_persistencia.llegueis_amb_nick = '{Adelaida}'
+    nou_usuari = usuari.Usuari(nova_persistencia, "Adelaida", "Adelaida", "1234")  #modifico Adi por Adelaida nick
+    print(nou_usuari.desa())                   
+    res = nova_persistencia.llegueis_amb_nick('Adelaida')
 
 
 if __name__ == "__main__":

@@ -8,9 +8,10 @@ import json
 
 app = flask.Flask(__name__)
 core_app = app_tasques.App_tasques()
-@app.route("/tasks/<id>", methods=["DELETE"])
+
+@app.route("/tasks/<id>", methods = ["DELETE"])
 def delete_task(id):
-    resultat = core_app.esbora_tasca(id)
+    resultat = core_app.esborra_tasca(id)
     return "", 204
 
 
@@ -40,7 +41,8 @@ def tasks():
             tasca_diccionary = json.loads(tasca_json) # tasca diccionary -> dictionary
             llista_jsons.append(tasca_diccionary) #array de dictionaries
         return flask.jsonify(llista_jsons), 200   # retorna json + Content-type: application/json
-@app.route('/registre', methods=('POST'))
+    
+@app.route('/registre', methods=['POST'])
 def registre():
     info_body = flask.request.get_data()
     usuari_nou = json.loads(info_body)
@@ -53,6 +55,21 @@ def registre():
     if resultat:
         return "", 201
     return "", 400
+
+@app.route('/login', methods=['POST'])
+def login():
+    info_body = flask.request.get_data()
+    usuari_nou = json.loads(info_body)
+    objecte_usuari = usuari.Usuari(
+        None, None,
+        usuari_nou["nick"],
+        usuari_nou["password"]
+        )
+    resultat = core_app.login(objecte_usuari.nick, objecte_usuari.password)
+    if resultat:
+        return flask.jsonify({"api_key" : resultat}), 201
+    return "", 403
+
 
 app.run(
     host="0.0.0.0",
