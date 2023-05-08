@@ -5,40 +5,7 @@ class Tasca():
     """tasca.py conté la classe Tasca que és la classe principal 
 de la nostra aplicació. 
 """
-
-    @property
-    def id(self):
-        return self._id
-
-    @id.setter
-    def id(self, valor):
-        self._id = valor
-
-    @property
-    def persistencia(self):
-       return self._persistencia
-    
-    @persistencia.setter
-    def persistencia(self, valor):
-        self._persistencia = valor
-
-    @property
-    def titol(self):
-        return self._titol
-
-    @titol.setter
-    def titol(self, valor):
-        self._titol = str(valor).strip()
-
-    @property
-    def done(self):
-        return self._done
-        
-    @done.setter
-    def done(self, valor):
-        self._done = valor
-    
-    def __init__(self, persistencia, titol, done=False, id=None):
+    def __init__(self, persistencia, titol, done=False, id=None, propietari=None ):
         # assert issubclass(type(persistencia), src.app_todo.persistencia_tasca.Persistencia_tasca) 
         # self._persistencia = persistencia
         
@@ -49,6 +16,52 @@ de la nostra aplicació.
         self._titol = str(titol).strip()
         self._done = done
         self._id = id
+        self._propietari= propietari
+
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, valor):
+        self._id = valor
+
+
+    @property
+    def persistencia(self):
+       return self._persistencia
+    
+    @persistencia.setter
+    def persistencia(self, valor):
+        self._persistencia = valor
+
+
+    @property
+    def titol(self):
+        return self._titol
+
+    @titol.setter
+    def titol(self, valor):
+        self._titol = str(valor).strip()
+
+
+    @property
+    def done(self):
+        return self._done
+        
+    @done.setter
+    def done(self, valor):
+        self._done = valor
+    
+    @property
+    def propietari(self):
+        return self._propietari
+        
+    @propietari.setter
+    def propietari(self, valor):
+        self._propietari= valor
+    
 
     def desa(self):
         resultat = self._persistencia.desa(self)   

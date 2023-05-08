@@ -72,3 +72,5 @@ class App_tasques():
             return api_key
         return None
     
+    def llegeix_usuari_amb_api_key(self, x_api_key):
+        return self._persistencia_usuaris.llegeix_usuari_amb_api_key(x_api_key)

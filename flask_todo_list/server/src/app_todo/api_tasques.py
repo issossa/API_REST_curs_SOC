@@ -18,9 +18,14 @@ def delete_task(id):
 @app.route("/tasks", methods=["POST", "GET", "PUT"])
 def tasks():
     if flask.request.method == "POST":
+        usuari_autoritzat = get_usuari_from_api_key()
+        if not usuari_autoritzat:
+            return "", 403
+
         info_body = flask.request.get_data() #info_body = '{"title": "hola"} -> str
         tasca_nova = json.loads(info_body)  #tasca_body = {"title": "hola"} -> dictionary
         object_tasca = tasca.Tasca(None, tasca_nova["title"]) #object_tasca -> tasca.Tasca
+        object_tasca.propietari = usuari_autoritzat
         resultat = core_app.afegeix_tasca(object_tasca)
         return "", 201
     elif flask.request.method == "PUT":
@@ -34,6 +39,7 @@ def tasks():
         resultat = core_app.afegeix_tasca(object_tasca)
         return "", 204
     elif flask.request.method == "GET":
+        usuari_autoritzat
         llista_jsons = []
         llista_tasques = core_app.llegir_tasques()
         for t in llista_tasques:
@@ -69,6 +75,17 @@ def login():
     if resultat:
         return flask.jsonify({"api_key" : resultat}), 201
     return "", 403
+
+def get_usuari_from_api_key():
+    x_api_key = None
+    if 'x-api-key' in flask.request.headers:
+        x_api_key = flask.request.headers['x-api-key']
+    else:
+        return None
+    usuari_autoritzat = core_app.llegeix_usuari_amb_api_key(x_api_key)
+    if not usuari_autoritzat:
+        return None
+    return usuari_autoritzat
 
 
 app.run(
